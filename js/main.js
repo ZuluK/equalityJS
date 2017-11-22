@@ -1,45 +1,75 @@
-/*Now you might think that dealing with NaN is a rare event, but if you’re working with any kind of code that uses numbers, you’d be surprised how often it
-shows up. The most common thing you’ll need to do is test for NaN, and given everything you’ve learned about JavaScript, how to do this might seem obvious:
+/*How equality converts its operands
+
+So what we know is that when you compare two values that have different types,
+JavaScript will convert one type into another in order to compare them.
+
 */
 
-if (myNum == NaN){
-  myNum = 0; //they aren't equal
-}
+/* Case 1
 
+Comparing a number and a string
 
-/* Any sensible person would assume that’s how you test to see if a variable holds a NaN value, but it doesn’t work.
-Why? Well, NaN isn’t equal to anything, not even itself, so, any kind of test for equality with NaN is off the table.
-Instead you need to use a special function: isNaN. Like this:
-*/
-if (isNaN(myNum)){
-  myNum = 0;//Use the isNaN function, which returns true if the value passed is not a  number
-}
+if you’re comparing a string and a number the same thing happens every time:
+the string is converted into a number, and the two numbers are then compared.
+This doesn’t always go well, because not all strings can be converted to numbers.
+Let’s see what happens in that case:
 
-/*So, let’s think through this a bit more. If NaN stands for “Not a Number”, what is it?
-Wouldn’t it be easier if it were named for what it is rather than what it isn’t?
-What do you think it is? We can check its type for a hint:
 */
 
-var test11 = 0/0;
-console.log(typeof test11); //returns 'number'
+99 == "vanilla" //we're comparing a number and a string but when we try to convert string into a number it fails99
+99 == NaN //false
 
+/* Case 2
 
-/*What on earth? NaN is of type number? How can something that’s not a number have the type number?
-Okay, deep breath. Think of NaN as just a poorly named value.
+ Comparing a boolean with any other type.
+
+ In this case, we convert the boolean to a number, and compare.
+ This might seem a little strange, but it’s easier to digest if you just remember that true converts to 1 and false converts to 0.
+ You also need to understand that sometimes this case requires doing more than one type conversion.
+ Let’s look at a few examples:
+
 */
 
-/*Try adding the code below
-to the <script> element in a basic web page and see what you get in the console when you load up the page.
-You won’t get why yet, but see if you can take a guess about what might be going on.
+1 == true //we're comparing a number to a boolean. The true value is converted into the number 1
+1 == 1//true
+
+
+/*Here’s another case; this time a boolean is compared to a string. Notice how more
+steps are needed.
 */
 
-if (99 == "99") {
-console.log("A number equals a string!");
-} else {
-console.log("No way a number equals a string"); }  //returns 'A number equals a string'
+"1" == true//we're comparing a number to a boolean. The true value is converted into the number 1
+"1" == 1 //and then we compare the string '1' to 1
+ 1 == 1//Now we use the rule from case one and the string is converted to a numbers
+true //And now we can finally compare a number to a number
 
 
-if (99 === "99") {
-console.log("A number equals a string!");
-} else {
-console.log("No way a number equals a string"); } //returns 'No way a number equals a string'
+/* Case 3
+
+Comparing null and undefined.
+
+Comparing these values evalutates to true.
+That might seem odd as well, but it’s the rule.
+For some insight, these values both essentially represent “no value”
+(that is, a variable with no value, or an object with no value), so they are considered to be equal.
+
+*/
+
+undefined = null //undefined and null are always equal
+
+
+/* Case 4
+
+Oh, actually there is no case #4.
+
+That’s it. You can pretty much determine the value of any equality with these rules.
+ That said, there are a few edge cases and caveats.
+ One caveat is that we still need to talk about comparing objects,
+ which we’ll talk about in a bit. The other is around conversions that might catch you off guard.
+ Here’s one example:
+
+*/
+
+1 == ""//We're comparing a number and a string. Use case 1
+1 == 0//the empty string is converted to the number 0
+false
